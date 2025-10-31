@@ -51,17 +51,20 @@ export default function App() {
 
   const [url, setUrl] = useState("");
   const [urlList, setUrlList] = useState([]);
-  async function shortenURL(url) {
-    try {
-    const res = await fetch(`https://api.shrtco.de/v2/shorten?url=${url}`);
+async function shortenURL(url) {
+  try {
+    const res = await fetch("http://localhost:3001/shorten", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url }),
+    });
+
     const data = await res.json();
-    return data.result.full_short_link;
-    }catch (error) {
-      console.error("Error shortening URL:", error);
-    }
-
-
+    return data.short;
+  } catch (error) {
+    console.error("Error shortening URL:", error);
   }
+}
   const handdleSubmit = async (e) => {
     e.preventDefault();
     const shortUrl = await shortenURL(url);
