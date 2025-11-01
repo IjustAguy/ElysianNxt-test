@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { useState } from 'react';
+import { useState , useEffect} from 'react';
 
 const Container = styled.div`
   display: flex;
@@ -23,6 +23,21 @@ const Button = styled.button`
   }
 `
 
+const ButtonDel = styled.button`
+  background-color: #ff0000ff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: 0.3s;
+
+  &:hover {
+    background-color: #b30000ff;
+    transform: scale(1.05);
+  }
+`
+
 const Form = styled.form`
   display: flex;
   flex-direction: column;
@@ -42,7 +57,7 @@ const Input = styled.input`
 const Result = styled.div`
   margin-top: 20px;
   padding: 10px;
-  border: 1px solid #eee;
+  border: 2px solid #000000ff;
   border-radius: 8px;
   width: 300px;
 `
@@ -65,12 +80,30 @@ async function shortenURL(url) {
     console.error("Error shortening URL:", error);
   }
 }
+async function deleteURL(code) {
+  try {
+    await fetch(`http://localhost:3001/delete/${code}`, {
+      method: "DELETE",
+    });
+  } catch (error) {
+    console.error("Error deleting URL:", error);
+  }
+  setUrlList(urlList.filter((item) => item.code !== code));
+}
   const handdleSubmit = async (e) => {
     e.preventDefault();
     const shortUrl = await shortenURL(url);
-    setUrlList([...urlList, { original: url, short: shortUrl }]);
+    setUrlList([...urlList, { original: url, code: shortUrl.split('/').pop() }]);
     setUrl("");
   }
+
+  useEffect(() => {
+    fetch("http://localhost:3001/list")
+      .then((res) => res.json())
+      .then((data) => setUrlList(data))
+      .catch((err) => console.error("Error loading URLs:", err));
+  }, []);
+
   return (
     <Container>
       <h1>URL Shortener</h1>
@@ -86,7 +119,8 @@ async function shortenURL(url) {
       {urlList.map((item, index) => (
         <Result key={index}>
           <p>Original: {item.original}</p>
-          <p>Shortened: {item.short}</p>
+          <p>Shortened: http://localhost:3001/{item.code}</p>
+          <ButtonDel onClick={() => deleteURL(item.code)}>Delete</ButtonDel>
         </Result>
       ))}
     </Container>
