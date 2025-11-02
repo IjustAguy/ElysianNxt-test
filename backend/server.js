@@ -25,7 +25,7 @@ app.post("/shorten", (req, res) => {
 
   const data = readData()
   const code = Math.random().toString(36).substring(2, 8)
-  const shortUrl = `http://localhost:3001/${code}`
+  const shortUrl = `https://elysiannxt-test.onrender.com/${code}`
 
   data.push({ code, original: url })
   writeData(data)

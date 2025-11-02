@@ -68,7 +68,7 @@ export default function App() {
   const [urlList, setUrlList] = useState([]);
 async function shortenURL(url) {
   try {
-    const res = await fetch("http://localhost:3001/shorten", {
+    const res = await fetch("https://elysiannxt-test.onrender.com/shorten", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ url }),
@@ -82,7 +82,7 @@ async function shortenURL(url) {
 }
 async function deleteURL(code) {
   try {
-    await fetch(`http://localhost:3001/delete/${code}`, {
+    await fetch(`https://elysiannxt-test.onrender.com/delete/${code}`, {
       method: "DELETE",
     });
   } catch (error) {
@@ -98,7 +98,7 @@ async function deleteURL(code) {
   }
 
   useEffect(() => {
-    fetch("http://localhost:3001/list")
+    fetch("https://elysiannxt-test.onrender.com/list")
       .then((res) => res.json())
       .then((data) => setUrlList(data))
       .catch((err) => console.error("Error loading URLs:", err));
@@ -119,7 +119,7 @@ async function deleteURL(code) {
       {urlList.map((item, index) => (
         <Result key={index}>
           <p>Original: {item.original}</p>
-          <p>Shortened: http://localhost:3001/{item.code}</p>
+          <p>Shortened: https://elysiannxt-test.onrender.com/{item.code}</p>
           <ButtonDel onClick={() => deleteURL(item.code)}>Delete</ButtonDel>
         </Result>
       ))}
